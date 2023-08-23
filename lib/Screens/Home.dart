@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Controllers/errors_handling.dart';
+import '../Controllers/google_ads.dart';
 import '../chnages.dart';
 import '../main.dart';
 
@@ -34,7 +36,7 @@ class _HomeState extends State<Home> {
 
   // FacebookBannerAd? facebookBannerAd;
   // bool _isInterstitialAdLoaded = false;
-  // late BannerAd _bannerGoogleAd;
+  late BannerAd _bannerGoogleAd;
   // InterstitialAd? _interstialGoogleAd;
   //for loading progress
   // double? progress;
@@ -47,7 +49,7 @@ class _HomeState extends State<Home> {
 
     pullToRefreshController = PullToRefreshController(
       options: PullToRefreshOptions(
-        color: MyColors.kprimaryColor,
+        color: MyColors.kmainColor,
       ),
       onRefresh: () async {
         if (Platform.isAndroid) {
@@ -68,7 +70,7 @@ class _HomeState extends State<Home> {
     //     iOSAdvertiserTrackingEnabled: true //default false
     //     );
     //Load Google Ads
-    // _createGoogleBannerAd();
+    _createGoogleBannerAd();
     // _createGoogleInterstitialAd();
   }
 
@@ -162,7 +164,7 @@ class _HomeState extends State<Home> {
                 // Handle web page load errors here
               },
               pullToRefreshController: PullToRefreshController(
-                  options: PullToRefreshOptions(color: MyColors.kprimaryColor),
+                  options: PullToRefreshOptions(color: MyColors.kmainColor),
                   onRefresh: () {
                     Navigator.pop(context);
                     Navigator.of(context).push(MaterialPageRoute(
@@ -284,9 +286,9 @@ class _HomeState extends State<Home> {
                   setState(() {
                     _isLoading = false;
                   });
-                  _launchExternalUrl(uri.toString());
+                  // _launchExternalUrl(uri.toString());
                   // You can handle other links here and decide how to navigate to them
-                  return NavigationActionPolicy.CANCEL;
+                  return NavigationActionPolicy.ALLOW;
                   // if (uri.toString() ==
                   //     'https://m.facebook.com/oauth/error/?error_code=PLATFORM__LOGIN_DISABLED_FROM_WEBVIEW_OLD_SDK_VERSION&display=touch') {
                   //   return NavigationActionPolicy.CANCEL;
@@ -296,48 +298,49 @@ class _HomeState extends State<Home> {
                 }
               },
             ),
-            Positioned.fill(
-              child: Visibility(
-                visible: _isLoading,
-                child: Container(
-                  // color: Colors.transparent,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    // Colors.white.withOpacity(
-                    //     0.7), // Set the white color with transparency for blur effect
-                    borderRadius: BorderRadius.circular(20),
-                  ), // Set kmainColor with transparency
-                  child: Center(
-                    child: Container(
-                      // width: 60,
-                      // height:60,
-                      width: containerSize,
-                      height: containerSize,
-                      decoration: BoxDecoration(
-                        color: MyColors.kmainColor,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Center(
-                        child: Lottie.asset('assets/images/loading.json',
-                            fit: BoxFit.fill),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Positioned.fill(
+            //   child: Visibility(
+            //     visible: _isLoading,
+            //     child: Container(
+            //       // color: Colors.transparent,
+            //       decoration: BoxDecoration(
+            //         color: Colors.transparent,
+            //         // Colors.white.withOpacity(
+            //         //     0.7), // Set the white color with transparency for blur effect
+            //         borderRadius: BorderRadius.circular(20),
+            //       ), // Set kmainColor with transparency
+            //       child: Center(
+            //         child: Container(
+            //           // width: 60,
+            //           // height:60,
+            //           width: containerSize,
+            //           height: containerSize,
+            //           decoration: BoxDecoration(
+            //             color: MyColors.kmainColor,
+            //             borderRadius: BorderRadius.circular(50),
+            //           ),
+            //           child: Center(
+            //             child: Lottie.asset('assets/images/loading.json',
+            //                 fit: BoxFit.fill),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+         
           ],
         ),
 
         // // for banner ads
-        // bottomNavigationBar: _bannerGoogleAd != null
-        //     ? Container(
-        //         decoration: BoxDecoration(color: Colors.transparent),
-        //         height: _bannerGoogleAd.size.height.toDouble(),
-        //         width: _bannerGoogleAd.size.width.toDouble(),
-        //         child: AdWidget(ad: _bannerGoogleAd),
-        //       )
-        //     : SizedBox(),
+        bottomNavigationBar: _bannerGoogleAd != null
+            ? Container(
+                decoration: BoxDecoration(color: Colors.transparent),
+                height: _bannerGoogleAd.size.height.toDouble(),
+                width: _bannerGoogleAd.size.width.toDouble(),
+                child: AdWidget(ad: _bannerGoogleAd),
+              )
+            : SizedBox(),
         //for facebook ads
         // bottomNavigationBar: Container(
         //   child: facebookBannerAd,
@@ -346,15 +349,15 @@ class _HomeState extends State<Home> {
     );
   }
 
-// // call this in init so you can create it
-//   void _createGoogleBannerAd() {
-//     _bannerGoogleAd = BannerAd(
-//         size: AdSize.banner,
-//         adUnitId: AdsMobServices.BannerAdUnitId!,
-//         listener: AdsMobServices.bannerAdListener,
-//         request: AdRequest())
-//       ..load();
-//   }
+// call this in init so you can create it
+  void _createGoogleBannerAd() {
+    _bannerGoogleAd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: AdsMobServices.BannerAdUnitId!,
+        listener: AdsMobServices.bannerAdListener,
+        request: AdRequest())
+      ..load();
+  }
 // // call this in init so you can create it
 //   void _createGoogleInterstitialAd() {
 //     InterstitialAd.load(

@@ -26,7 +26,7 @@
    <uses-permission android:name="android.permission.AUDIO_CAPTURE" /> -->
    <!-- Add more permission entries as needed -->
    <application
-        android:label="Naija Chef Hub"
+        android:label="iam31p"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <!-- Add the service declaration for custom tabs support -->
@@ -73,8 +73,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- <meta-data
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3692439827101270~4062353450"/> -->
+            android:value="ca-app-pub-3692439827101270~4062353450"/>
     </application>
 </manifest>

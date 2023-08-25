@@ -66,7 +66,7 @@
 			<string>tel</string>
 		</array>
 		<!-- for google ads  -->
-		<!-- <key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-################~##########</string> -->
+		<key>GADApplicationIdentifier</key>
+		<string>ca-app-pub-7767655536636388~6265170886</string>
 	</dict>
 </plist>

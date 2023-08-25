@@ -21,7 +21,7 @@ class Changes {
   static String AppTitle = 'iam31p';
 
   //one signal
-  static String oneSignalAppId = '5a7995b4-bc90-4634-b141-c87fbb335a42';
+  // static String oneSignalAppId = '5a7995b4-bc90-4634-b141-c87fbb335a42';
   // remove json file if you donot have one signal setup
 
   //1-  flutter pub global activate rename  //already activated just in case

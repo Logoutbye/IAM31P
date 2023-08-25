@@ -4,42 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdsMobServices {
+  static String? get RewardedAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-7767655536636388/4868005331';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-7767655536636388/1064491698';
+    }
+    return null;
+  }
 
   //un comment the functions at home in init state
   // un comment at manifest and infop too
   static String? get BannerAdUnitId {
     if (Platform.isAndroid) {
-      print('i am at android id');
-      //   this one is real testing one
-      // return 'ca-app-pub-3692439827101270/3184386057';
-
-      // this one is not to get baned while uploading
-      return 'ca-app-pub-3940256099942544/6300978111';
+      return 'ca-app-pub-7767655536636388/2842846919';
     } else if (Platform.isIOS) {
-      // change this one
-      print('i am at ios id');
-
-      return 'ca-app-pub-6720288058326515/4294249750';
+      return 'ca-app-pub-7767655536636388/2396673090';
     }
     return null;
   }
 
-  static String? get InterstitialAdId {
-    if (Platform.isAndroid) {
-      print('i am at android id');
-      //   this one is real testing one
-      // return 'ca-app-pub-3692439827101270/9306941273';
-
-      // this one is not to get baned while uploading
-      return 'ca-app-pub-3940256099942544/1033173712';
-    } else if (Platform.isIOS) {
-      // change this one
-      print('i am at ios id');
-
-      return 'ca-app-pub-6720288058326515/4109979556';
-    }
-    return null;
-  }
+  // static String? get InterstitialAdId {
+  //   if (Platform.isAndroid) {
+  //     return 'ca-app-pub-3940256099942544/1033173712';
+  //   } else if (Platform.isIOS) {
+  //     return 'ca-app-pub-6720288058326515/4109979556';
+  //   }
+  //   return null;
+  // }
 
   static final BannerAdListener bannerAdListener = BannerAdListener(
     onAdLoaded: (ad) => debugPrint('onAdLoaded'),
@@ -50,5 +42,6 @@ class AdsMobServices {
     onAdClosed: (ad) => debugPrint('onAdClosed'),
     onAdOpened: (ad) => debugPrint('onAdOpened'),
   );
-}
 
+
+}

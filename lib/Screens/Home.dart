@@ -37,6 +37,9 @@ class _HomeState extends State<Home> {
   // FacebookBannerAd? facebookBannerAd;
   // bool _isInterstitialAdLoaded = false;
   late BannerAd _bannerGoogleAd;
+
+  RewardedAd? _rewardedAd;
+  int _rewardScrore = 0;
   // InterstitialAd? _interstialGoogleAd;
   //for loading progress
   // double? progress;
@@ -71,7 +74,11 @@ class _HomeState extends State<Home> {
     //     );
     //Load Google Ads
     _createGoogleBannerAd();
+    _createGoogleRewardAd();
     // _createGoogleInterstitialAd();
+        Timer(Duration(seconds: 30), () {
+      _showGoogleRewardedAd();
+    });
   }
 
   @override
@@ -116,12 +123,21 @@ class _HomeState extends State<Home> {
       //   return true;
       // },
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(0),
-          child: AppBar(
-            backgroundColor: MyColors.kprimaryColor,
-            elevation: 0,
-          ),
+        appBar:
+             PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child:
+            AppBar(
+          backgroundColor: const Color.fromARGB(255, 197, 88, 88),
+          elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _showGoogleRewardedAd();
+                },
+                icon: Icon(Icons.abc))
+          ],
+        ),
         ),
         body: Stack(
           children: [
@@ -256,13 +272,15 @@ class _HomeState extends State<Home> {
                 var uri = navigationAction.request.url;
                 if (uri!.toString().startsWith(Changes.startPointUrl)) {
                   return NavigationActionPolicy.ALLOW;
-                } else if (uri.toString().startsWith(Changes.makePhoneCallUrl)) {
+                } else if (uri
+                    .toString()
+                    .startsWith(Changes.makePhoneCallUrl)) {
                   if (kDebugMode) {
                     print('opening phone $uri');
                   }
                   _makePhoneCall(uri.toString());
                   setState(() {
-                    _isLoading=false;
+                    _isLoading = false;
                   });
                   return NavigationActionPolicy.CANCEL;
                 } else if (uri.toString().startsWith(Changes.openWhatsAppUrl)) {
@@ -270,11 +288,13 @@ class _HomeState extends State<Home> {
                     print('opening WhatsApp $uri');
                   }
                   _openWhatsApp('$uri');
-                   setState(() {
-                    _isLoading=false;
+                  setState(() {
+                    _isLoading = false;
                   });
                   return NavigationActionPolicy.CANCEL;
-                } else if (uri.toString().startsWith(Changes.blockNavigationUrl)) {
+                } else if (uri
+                    .toString()
+                    .startsWith(Changes.blockNavigationUrl)) {
                   if (kDebugMode) {
                     print('Blocking navigation to $uri');
                   }
@@ -286,9 +306,9 @@ class _HomeState extends State<Home> {
                   setState(() {
                     _isLoading = false;
                   });
-                  // _launchExternalUrl(uri.toString());
+                  _launchExternalUrl(uri.toString());
                   // You can handle other links here and decide how to navigate to them
-                  return NavigationActionPolicy.ALLOW;
+                  return NavigationActionPolicy.CANCEL;
                   // if (uri.toString() ==
                   //     'https://m.facebook.com/oauth/error/?error_code=PLATFORM__LOGIN_DISABLED_FROM_WEBVIEW_OLD_SDK_VERSION&display=touch') {
                   //   return NavigationActionPolicy.CANCEL;
@@ -328,7 +348,6 @@ class _HomeState extends State<Home> {
             //     ),
             //   ),
             // ),
-         
           ],
         ),
 
@@ -347,6 +366,40 @@ class _HomeState extends State<Home> {
         // ),
       ),
     );
+  }
+
+  void _createGoogleRewardAd() {
+    print('::::i am at create Reward ad start');
+    RewardedAd.load(
+        adUnitId: AdsMobServices.RewardedAdUnitId!,
+        request: AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          onAdLoaded: (ad) => setState(() => _rewardedAd = ad),
+          onAdFailedToLoad: (error) => setState(() => _rewardedAd = null),
+        ));
+    print('::::i am at  create Reward ad end');
+  }
+
+  void _showGoogleRewardedAd() {
+    print('::::i am at show Reward ad start and _rewardedAd is  $_rewardedAd');
+
+    if (_rewardedAd != null) {
+      _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _createGoogleRewardAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _createGoogleRewardAd();
+        },
+      );
+      _rewardedAd!.show(
+        onUserEarnedReward: (ad, reward) => setState(() => _rewardScrore++),
+      );
+      _rewardedAd = null;
+    }
+    print('::::i am at Reward ad end');
   }
 
 // call this in init so you can create it
